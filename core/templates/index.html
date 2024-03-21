@@ -1,1 +1,33 @@
-Hello Docker OwO!
+{% extends 'master.html' %}
+
+{% block title %}
+  Home
+{% endblock %}
+
+{% block content %}
+  <div class="row" style="padding-top: 1vh;">
+    <div class="col text-center">
+      <h1>Welcome!</h1>
+    </div>
+  </div>
+  <div class="row justify-content-center" style="padding-top: 1vh;">
+    <form class="col-md-6" action = "" method="post">
+      {% csrf_token %}
+      <div class="mb-3">
+        {{form.non_field_errors}}
+        {{form.subject.errors}}
+        <label for="{{form.gamename.id_for_label}}" class="form-label">Enter A Game:</label>
+        {% comment %} <input type="text" class="form-control" id="inputData" placeholder="CSGO" /> {% endcomment %}
+        {{form.gamename}}
+      </div>
+      <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+  </div>
+  <div class="row justify-content-center" style="padding-top: 1vh;">
+    {% if processed_data %}
+        <h2>Processed Data:</h2>
+        <p>{{ processed_data }}</p>
+    {% endif %}
+    {% comment %}For loop taht displays data about the game here{% endcomment %}
+  </div>
+{% endblock %}

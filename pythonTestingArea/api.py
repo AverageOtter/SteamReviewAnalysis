@@ -1,10 +1,8 @@
-import requests
+import time
 import json
 import logging
-from http.client import HTTPConnection
+import requests
 from bs4 import BeautifulSoup
-import time
-import atexit
 
 #Timing Decorator
 def tictoc(func):
@@ -78,7 +76,7 @@ def get_n_reviews(appid, n=100):
 
 @tictoc
 def main():
-    logging.basicConfig(filename= __file__.removesuffix(".py")+".log", format='%(asctime)s %(levelname)s %(message)s', level=logging.INFO, )
+    logging.basicConfig(filename= __file__.removesuffix(".py")+".log", format='%(asctime)s %(name)s %(levelname)s %(message)s', level=logging.INFO, )
     logging.critical("Starting Program")
     #! DEBUG TESTING
     while 1:
