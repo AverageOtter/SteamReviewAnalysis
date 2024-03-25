@@ -4,6 +4,53 @@
   Home
 {% endblock %}
 
+{% load static %}
+
+{% block head %}
+  <script src="{% static 'scripts/canvasjs.min.js' %}"></script>
+  <script>
+    window.onload = function () {
+      var sentDist = {{ sent_dist | safe }};
+      var chart1 = new CanvasJS.Chart("chartContainer1", {
+        theme: "dark1",
+        animationEnabled: true,
+        title: {
+          text: "Sentiment Distribution"
+        },
+        data: [{
+          type: "pie",
+          startAngle: -90,
+          yValueFormatString: "#,###'%'",
+          dataPoints: sentDist
+        }]
+      });
+      var sent_prop_dist = {{sent_prop_dist | safe}};
+      var chart2 = new CanvasJS.Chart("chartContainer2", {
+        theme: "dark2",
+        animationEnabled: true,
+        title: {
+          text: "Sentiment Proportion"
+        },
+        data: [{
+          type: "pie",
+          startAngle: -90,
+          yValueFormatString: "#,###'%'",
+          dataPoints: sent_prop_dist
+        }]
+      });
+
+      if (sentDist) {
+        chart1.render();
+      };
+      console.log(sent_prop_dist)
+      if (sent_prop_dist) {
+        chart2.render();
+      };
+    }
+  </script>
+  
+{% endblock %}
+
 {% block content %}
   <div class="row" style="padding-top: 1vh;">
     <div class="col text-center">
@@ -11,23 +58,35 @@
     </div>
   </div>
   <div class="row justify-content-center" style="padding-top: 1vh;">
-    <form class="col-md-6" action = "" method="post">
+    <form class="col-md-6" action="" method="post">
       {% csrf_token %}
       <div class="mb-3">
-        {{form.non_field_errors}}
-        {{form.subject.errors}}
-        <label for="{{form.gamename.id_for_label}}" class="form-label">Enter A Game:</label>
+        {{ form.non_field_errors }}
+        {{ form.subject.errors }}
+        <label for="{{ form.gamename.id_for_label }}" class="form-label">Enter A Game:</label>
         {% comment %} <input type="text" class="form-control" id="inputData" placeholder="CSGO" /> {% endcomment %}
-        {{form.gamename}}
+        {{ form.gamename }}
       </div>
       <button type="submit" class="btn btn-primary">Submit</button>
     </form>
   </div>
   <div class="row justify-content-center" style="padding-top: 1vh;">
-    {% if processed_data %}
+    <div class="col-md-6">
+      {% if processed_data %}
         <h2>Processed Data:</h2>
         <p>{{ processed_data }}</p>
-    {% endif %}
-    {% comment %}For loop taht displays data about the game here{% endcomment %}
+      {% endif %}
+      {% comment %}For loop taht displays data about the game here{% endcomment %}
+    </div>
+  </div>
+  <div class="row justify-content-center" style="padding-top: 1vh;">
+    <div class="col-md-6">
+      <div id="chartContainer1" style="width: 100%; height: 360px;"></div>
+    </div>
+  </div>
+  <div class="row justify-content-center" style="padding-top: 1vh;">
+    <div class="col-md-6">
+      <div id="chartContainer2" style="width: 100%; height: 360px;"></div>
+    </div>
   </div>
 {% endblock %}

@@ -60,6 +60,8 @@ def analytics(data):
     The analytics function takes a list of strings, each string being a review.
     It then calculates the average star rating and prints out the 
     number of reviews for each star rating.
+        
+    
     
     :param data: Pass in the list of strings, which are the reviews
     :return: The average stars and the star counts
@@ -76,13 +78,45 @@ def analytics(data):
         total_stars += star
 
     average_stars = total_stars / num_reviews
-    ret["avg"] = average_stars
+    
+    pos_sent_prop = int(((star_counts["5 stars"] + star_counts["4 stars"])/num_reviews)*100)
+    neu_sent_prop = int((star_counts["3 stars"]/num_reviews)*100)
+    neg_sent_prop = int(((star_counts["2 stars"] + star_counts["1 stars"])/num_reviews)*100)
+    
+    print()
+    print()
+    print(pos_sent_prop)
+    print(neu_sent_prop)
+    print(neg_sent_prop)
+    
+    
+    
+    print()
+    print()
+    print()
+    
+    
+    sent_prop_data_points = [
+        {"label":"Positive Sentiment", "y":pos_sent_prop},
+        {"label":"Neutral Sentiment", "y":neu_sent_prop},
+        {"label":"Negative Sentiment", "y":neg_sent_prop},
+    ]
+    
+    sent_dist_data_points = []
+    for key,value in star_counts.items():
+        sent_dist_data_points.append({"label":key, "y":int(value)})
+    
     # Report metrics
     print("Average stars:", average_stars)
     print("Star counts:")
     for key, value in star_counts.items():
         print(f"{value} \"{key}\"")
     ret["star_counts"] = star_counts
+    ret["avg_stars"] = average_stars
+    ret["total_stars"] = total_stars
+    ret["num_reviews"] = num_reviews
+    ret["sent_dist"] = sent_dist_data_points
+    ret["sent_prop_dist"] = sent_prop_data_points
     return json.dumps(ret)
 
 
