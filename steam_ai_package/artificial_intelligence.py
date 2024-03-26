@@ -55,16 +55,15 @@ def sentiment_anal(data: list[str]) -> list:
         sentiment_results.append(max_star_rating)
     return sentiment_results
 
-def analytics(data):
+def analytics(data, game_name):
     """
     The analytics function takes a list of strings, each string being a review.
     It then calculates the average star rating and prints out the 
     number of reviews for each star rating.
-        
-    
     
     :param data: Pass in the list of strings, which are the reviews
-    :return: The average stars and the star counts
+    :param Keeps Game_name for identification
+    :return: A json object with the following keys:
     :doc-author: Trelent
     """
     ret = {}
@@ -84,16 +83,6 @@ def analytics(data):
     neu_sent_prop = ((star_counts["3 stars"]/num_reviews)*100)
     neg_sent_prop = ((star_counts["2 stars"] + star_counts["1 star"])/num_reviews)*100
     
-    print("Prop")
-    print(pos_sent_prop)
-    print(neu_sent_prop)
-    print(neg_sent_prop)
-    print("Counts")
-    print((star_counts["5 stars"] + star_counts["4 stars"]))
-    print(star_counts["3 stars"])
-    print((star_counts["2 stars"] + star_counts["1 stars"]))
-    
-    
     
     sent_prop_data_points = [
         {"label":"Positive Sentiment", "y":pos_sent_prop},
@@ -110,8 +99,9 @@ def analytics(data):
     print("Star counts:")
     for key, value in star_counts.items():
         print(f"{value} \"{key}\"")
+    ret["game_name"] = game_name
     ret["star_counts"] = star_counts
-    ret["avg_stars"] = average_stars
+    ret["avg_stars"] = round(average_stars,2)
     ret["total_stars"] = total_stars
     ret["num_reviews"] = num_reviews
     ret["sent_dist"] = sent_dist_data_points
@@ -135,7 +125,7 @@ def sentiment(game_name, data):
         logger.info("Calculating Sentiment for %s", game_name)
         sent = sentiment_anal(data)
         logger.info("Calculating Analytics for %s", game_name)
-        ret = analytics(sent)
+        ret = analytics(sent, game_name)
     except Exception as e: # pylint: disable=broad-except; Allowed for Logging purposes
         logger.exception("Sentiment crashed. Error: %s", e)
     logger.info("Finished with %s", game_name)

@@ -12,7 +12,7 @@
     window.onload = function () {
       var sentDist = {{ sent_dist | safe }};
       var chart1 = new CanvasJS.Chart("chartContainer1", {
-        theme: "dark1",
+        theme: "dark2",
         animationEnabled: true,
         title: {
           text: "Sentiment Distribution"
@@ -73,8 +73,8 @@
   <div class="row justify-content-center" style="padding-top: 1vh;">
     <div class="col-md-6">
       {% if processed_data %}
-        <h2>Processed Data:</h2>
-        <p>{{ processed_data }}</p>
+        <h2>Analysis of {{processed_data.game_name}}</h2>
+        <p>Average Sentiment Rating {{ processed_data.avg_stars }} from {{processed_data.num_reviews}} reviews.</p>
       {% endif %}
       {% comment %}For loop taht displays data about the game here{% endcomment %}
     </div>
