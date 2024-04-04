@@ -26,5 +26,6 @@ def home(request):
             context["processed_data"] = processed_data
             context["sent_dist"] = processed_data["sent_dist"]
             context["sent_prop_dist"] = processed_data["sent_prop_dist"]
+            context["imgB64"] = processed_data["imgB64"]
     context['form'] = form
     return render(request, 'index.html', context=context)

@@ -106,7 +106,7 @@ def analytics(data, game_name):
     ret["num_reviews"] = num_reviews
     ret["sent_dist"] = sent_dist_data_points
     ret["sent_prop_dist"] = sent_prop_data_points
-    return json.dumps(ret)
+    return ret
 
 
 def sentiment(game_name, data):

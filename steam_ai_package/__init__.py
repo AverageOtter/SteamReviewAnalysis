@@ -2,6 +2,8 @@
 from steam_ai_package import logging_config
 from .api import get_app_id, get_n_reviews
 from .artificial_intelligence import sentiment
+from .wordcloud import generate_wordcloud
+import json
 
 def get_sentiment_of_game(game: str):
     """
@@ -21,4 +23,9 @@ def get_sentiment_of_game(game: str):
     for v in resp:
         rev.append(v["review"])
     ret = sentiment(game, rev)
-    return ret
+    imgB64 = generate_wordcloud(rev)
+    if imgB64 != None:
+        ret.update(imgB64)
+    else:
+        print("ERROR ERROR ERROR")
+    return json.dumps(ret)

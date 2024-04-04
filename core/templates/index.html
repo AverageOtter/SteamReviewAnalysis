@@ -81,6 +81,13 @@
   </div>
   <div class="row justify-content-center" style="padding-top: 1vh;">
     <div class="col-md-6">
+      {% if processed_data %}
+      <img src="data:image/png;base64,{{ imgB64 }}" class="img-fluid" alt="Wordcloud">
+      {% endif %}
+    </div>
+  </div>
+  <div class="row justify-content-center" style="padding-top: 1vh;">
+    <div class="col-md-6">
       <div id="chartContainer1" style="width: 100%; height: 360px;"></div>
     </div>
   </div>
