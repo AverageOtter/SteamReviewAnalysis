@@ -82,7 +82,10 @@
   <div class="row justify-content-center" style="padding-top: 1vh;">
     <div class="col-md-6">
       {% if processed_data %}
-      <img src="data:image/png;base64,{{ imgB64 }}" class="img-fluid" alt="Wordcloud">
+      <h2>Positive Wordcloud</h2>
+      <img src="data:image/png;base64,{{ PosWordCloud }}" class="img-fluid" alt="PosWordcloud">
+      <h2>Negatitve Wordcloud</h2>
+      <img src="data:image/png;base64,{{ NegWordCloud }}" class="img-fluid" alt="NegWordcloud">
       {% endif %}
     </div>
   </div>

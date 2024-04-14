@@ -6,6 +6,7 @@ from transformers import AutoTokenizer, AutoConfig
 import torch.nn.functional as F
 import torch
 from .logging_config import configure_logger
+from .wordcloud import generate_wordcloud
 
 logger = configure_logger(__name__)
 
@@ -26,16 +27,15 @@ def preprocess(text):
 def sentiment_anal(data: list[str]) -> list:
     """
     The sentiment_anal function takes in a list of strings and 
-    returns the sentiment analysis for each string.
-    The sentiment analysis is done by using HuggingFace's Amazon Review Sentiment Analysis model, 
-    which was trained on Amazon reviews with star ratings from 1 to 5. The function first 
-    preprocesses the text by removing punctuation, lowercasing all words, and removing 
-    stopwords (using NLTK). Then it tokenizes the text into tokens that can be fed into the model. 
-    Finally it uses HuggingFace's AutoModelForSequenceClassification class to load in 
-    their pretrained model and then use that pretrained
+        returns the sentiment analysis for each string.
+        The sentiment analysis is done by using HuggingFace's Amazon Review Sentiment Analysis model, 
+        which was trained on Amazon reviews with star ratings from 1 to 5. The function first 
+        preprocesses the text by removing punctuation, lowercasing all words, and removing 
+        stopwords (using NLTK). Then it tokenizes the text into tokens that can be fed into the model. 
+        Finally it uses HuggingFace's AutoModelForSequenceClassification class to load in
     
     :param data: list[str]: Pass in the reviews that we want to analyze
-    :return: A list of strings
+    :return: A list of tuples, where each tuple contains the sentiment analysis and text
     :doc-author: Trelent
     """
     model_name = "LiYuan/amazon-review-sentiment-analysis"
@@ -52,29 +52,33 @@ def sentiment_anal(data: list[str]) -> list:
         probabilities = F.softmax(logits, dim=1)
         max_prob_index = torch.argmax(probabilities, dim=1)
         max_star_rating = star_ratings[max_prob_index.item()]
-        sentiment_results.append(max_star_rating)
-    return sentiment_results
+        sentiment_results.append((max_star_rating, text))
+    return sentiment_results #returns a tuple of max star rating and text
 
-def analytics(data, game_name):
+def analytics(review_tuple, game_name):
     """
     The analytics function takes a list of strings, each string being a review.
     It then calculates the average star rating and prints out the 
     number of reviews for each star rating.
     
-    :param data: Pass in the list of strings, which are the reviews
-    :param Keeps Game_name for identification
-    :return: A json object with the following keys:
+    
+    :param review_tuple: Pass in the list of tuples
+    :param game_name: Identify the game
+    :return: A json object 
     :doc-author: Trelent
     """
+    star_ratings = list(zip(*review_tuple))[0]
     ret = {}
     # Take the sentiment data, list of ['5 stars', '1 star', '5 stars']
     # Average the stars
     total_stars = 0
-    num_reviews = len(data)
-    star_counts = Counter(data)
-    for review in data:
-        star = int(review.split()[0])  # Extracting the star rating from the string
+    num_reviews = len(star_ratings)
+    star_counts = Counter(star_ratings)
+
+    for review_star in star_ratings:
+        star = int(review_star.split()[0])  # Extracting the star rating from the string
         total_stars += star
+        
 
     average_stars = total_stars / num_reviews
     
@@ -95,10 +99,6 @@ def analytics(data, game_name):
         sent_dist_data_points.append({"label":key, "y":int((value/num_reviews)*100)})
     
     # Report metrics
-    print("Average stars:", average_stars)
-    print("Star counts:")
-    for key, value in star_counts.items():
-        print(f"{value} \"{key}\"")
     ret["game_name"] = game_name
     ret["star_counts"] = star_counts
     ret["avg_stars"] = round(average_stars,2)
@@ -106,6 +106,20 @@ def analytics(data, game_name):
     ret["num_reviews"] = num_reviews
     ret["sent_dist"] = sent_dist_data_points
     ret["sent_prop_dist"] = sent_prop_data_points
+    
+    #Generate word clouds
+    posText = [] #List of text that has >=4 Stars
+    NegText = [] #List of text that has <=2 Stars
+    for star,text in review_tuple:
+        star_int = int(star.split()[0])
+        if star_int >= 4:
+            posText.append(text)
+        elif star_int <= 2:
+            NegText.append(text)
+            
+    
+    ret["PosWordCloud"] = generate_wordcloud(posText)
+    ret["NegWordCloud"] = generate_wordcloud(NegText)
     return ret
 
 

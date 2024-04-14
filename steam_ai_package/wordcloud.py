@@ -36,10 +36,8 @@ def generate_wordcloud(reviews: list):
         wordcloud.to_image().save(buffer, format="PNG")
         b64_bytes = base64.b64encode(buffer.getvalue())
         b64_string = b64_bytes.decode('utf-8')
-        result = {"imgB64":b64_string}
-        with open('output.txt', 'a') as f:
-            f.write(b64_string)
+        result = b64_string
     except Exception as e:
         logger.error(f"Img to B64 Error: {e}")
-        result = {"imgB64":"ERROR"}
+        result = "ERROR"
     return result
