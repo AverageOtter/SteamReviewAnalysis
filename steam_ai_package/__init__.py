@@ -1,6 +1,6 @@
 """This module initializes the package and offers the client friendly function"""
 from steam_ai_package import logging_config
-from .api import get_app_id, get_n_reviews
+from .api import get_app_id, get_n_reviews, get_app_details
 from .artificial_intelligence import sentiment
 import json
 
@@ -18,6 +18,7 @@ def get_sentiment_of_game(game: str):
     """
     appid = get_app_id(game)
     resp :list = get_n_reviews(appid) #List of Dict
+    get_app_details(appid)
     rev = []
     for v in resp:
         rev.append(v["review"])

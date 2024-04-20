@@ -4,6 +4,7 @@ This module handles grabbing reviews from the Steam API
 # import logging
 import requests
 from bs4 import BeautifulSoup
+import json
 from .logging_config import configure_logger
 
 logger = configure_logger(__name__)
@@ -84,3 +85,21 @@ def get_n_reviews(appid, n=100):
         if len(response['reviews']) < 100:
             break
     return reviews
+
+
+def get_app_details(app_id):
+    url="https://store.steampowered.com/api/appdetails?appids="
+    req = url + str(app_id)
+    response = requests.get(req,headers={'User-Agent': 'Mozilla/5.0'},timeout=10)
+    response_data :dict= response.json()
+    response_data = response_data[str(app_id)]["data"]
+    data = {}
+    data["header_image"] = response_data.get("header_image", "")
+    data["short_description"] = response_data.get("short_description", "")
+    data["price_overview"] = response_data.get("price_overview", {})
+    dlc_size = len(response_data.get("dlc", []))
+    data["metacritic"] = response_data.get("metacritic", {})
+    data["name"] = response_data.get("name", "")
+    print(data)
+    # data : dict= json.loads(response)
+    # print(data.keys())
