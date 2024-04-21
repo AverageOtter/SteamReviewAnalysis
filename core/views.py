@@ -6,12 +6,14 @@ import json
 
 def home(request):
     context = {}
+    context["success"] = False
     if request.method == 'POST':
         form = InputForm(request.POST)
         if form.is_valid():
             name = form.cleaned_data['gamename']
-            # 
-            processed_data = steam_ai_package.get_sentiment_of_game(name)
+            app_id = steam_ai_package.get_app_id(name)
+            #TODO:Check Backend for AppID key
+            processed_data = steam_ai_package.get_sentiment_of_game(app_id)
             # Store the processed data in the session
             request.session['processed_data'] = processed_data
             # Redirect to the same page to avoid form resubmission
@@ -23,10 +25,9 @@ def home(request):
             processed_data = json.loads(processed_data)
             # Delete the processed data from the session after displaying it
             del request.session['processed_data'] 
-            context["processed_data"] = processed_data
-            context["sent_dist"] = processed_data["sent_dist"]
-            context["sent_prop_dist"] = processed_data["sent_prop_dist"]
-            context["PosWordCloud"] = processed_data["PosWordCloud"]
-            context["NegWordCloud"] = processed_data["NegWordCloud"]
+            context:dict = processed_data
+            context["success"] = True
+            # with open("output.txt", "w") as file:
+            #     json.dump(processed_data, file, indent=4)
     context['form'] = form
     return render(request, 'index.html', context=context)

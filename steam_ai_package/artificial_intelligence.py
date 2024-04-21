@@ -99,7 +99,6 @@ def analytics(review_tuple, game_name):
         sent_dist_data_points.append({"label":key, "y":int((value/num_reviews)*100)})
     
     # Report metrics
-    ret["game_name"] = game_name
     ret["star_counts"] = star_counts
     ret["avg_stars"] = round(average_stars,2)
     ret["total_stars"] = total_stars

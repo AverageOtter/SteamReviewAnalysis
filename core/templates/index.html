@@ -48,7 +48,63 @@
       };
     }
   </script>
-  
+
+  <style>
+    .card {
+      background-color: #2c3e50;
+      border: none;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .card-header {
+      background-color: #1f2c39;
+      border-bottom: none;
+      border-top-left-radius: 10px;
+      border-top-right-radius: 10px;
+  }
+
+  .card-body {
+      padding: 20px;
+  }
+
+  .game-title {
+      font-size: 24px;
+      font-weight: bold;
+      margin-bottom: 10px;
+  }
+
+  .game-description {
+      font-size: 16px;
+      margin-bottom: 20px;
+  }
+
+  .btn-play {
+      background-color: #4CAF50;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+  }
+
+  .btn-play:hover {
+      background-color: #45a049;
+  }
+
+  .game-price {
+    font-size: 16px;
+    float: right;
+    margin-top: 10px;
+}
+.metacritic-score {
+  font-size: 16px;
+  text-align: center;
+  margin-top: 20px;
+  color: #3498db;
+}
+</style>
 {% endblock %}
 
 {% block content %}
@@ -72,20 +128,44 @@
   </div>
   <div class="row justify-content-center" style="padding-top: 1vh;">
     <div class="col-md-6">
-      {% if processed_data %}
-        <h2>Analysis of {{processed_data.game_name}}</h2>
-        <p>Average Sentiment Rating {{ processed_data.avg_stars }} from {{processed_data.num_reviews}} reviews.</p>
+      {% if success %}
+        <div class="card">
+          <div class="card-header text-center">
+            <img src="{{ header_image }}" alt="Game Header Image" class="img-fluid" />
+          </div>
+          <div class="card-body">
+            <h5 class="game-title">{{ name }}</h5>
+            <p class="game-description">{{ short_description }}</p>
+            {% if website %}
+              <a href="{{ website }}" class="btn-play">Store Page</a>
+            {% else %}
+              <a href="https://store.steampowered.com/" class="btn-play">Steam Store</a>
+            {% endif %}
+            <span class="game-price">{{ price_overview.final_formatted }}</span>
+            {% if metacritic.score %}
+              <div class="metacritic-score">Metacritic Score: {{ metacritic.score }}</div>
+            {% endif %}
+          </div>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+  <div class="row justify-content-center" style="padding-top: 1vh;">
+    <div class="col-md-6">
+      {% if success %}
+        <h2>Analysis of {{ name }}</h2>
+        <p>Average Sentiment Rating {{ avg_stars }} from {{ num_reviews }} reviews.</p>
       {% endif %}
       {% comment %}For loop taht displays data about the game here{% endcomment %}
     </div>
   </div>
   <div class="row justify-content-center" style="padding-top: 1vh;">
     <div class="col-md-6">
-      {% if processed_data %}
-      <h2>Positive Wordcloud</h2>
-      <img src="data:image/png;base64,{{ PosWordCloud }}" class="img-fluid" alt="PosWordcloud">
-      <h2>Negatitve Wordcloud</h2>
-      <img src="data:image/png;base64,{{ NegWordCloud }}" class="img-fluid" alt="NegWordcloud">
+      {% if success %}
+        <h2>Positive Wordcloud</h2>
+        <img src="data:image/png;base64,{{ PosWordCloud }}" class="img-fluid" alt="PosWordcloud" />
+        <h2>Negatitive Wordcloud</h2>
+        <img src="data:image/png;base64,{{ NegWordCloud }}" class="img-fluid" alt="NegWordcloud" />
       {% endif %}
     </div>
   </div>

@@ -5,6 +5,7 @@ This module handles grabbing reviews from the Steam API
 import requests
 from bs4 import BeautifulSoup
 import json
+from retrying import retry
 from .logging_config import configure_logger
 
 logger = configure_logger(__name__)
@@ -45,10 +46,13 @@ def get_reviews(appid, params=None):
     if params is None:
         params = {'json': 1}
     url = 'https://store.steampowered.com/appreviews/'
-    response = requests.get(url=url+appid, params=params,
-                            headers={'User-Agent': 'Mozilla/5.0'},
-                            timeout=10)
-    return response.json()
+    req = url+appid
+    data = None
+    try:
+        data = fetch_data(req, params=params)
+    except Exception as e:
+        logger.critical(f"Error Fetching Review Data: {e}")
+    return data
 
 #https://andrew-muller.medium.com/scraping-steam-user-reviews-9a43f9e38c92 w/ editing
 def get_n_reviews(appid, n=100):
@@ -90,16 +94,36 @@ def get_n_reviews(appid, n=100):
 def get_app_details(app_id):
     url="https://store.steampowered.com/api/appdetails?appids="
     req = url + str(app_id)
-    response = requests.get(req,headers={'User-Agent': 'Mozilla/5.0'},timeout=10)
-    response_data :dict= response.json()
+    response_data = None
+    try:
+        response_data = fetch_data(req)
+    except Exception as e:
+        logger.critical(f"Error Fetching Details Data: {e}")
+    if(response_data == None):
+        logger.critical(f"Details Response Data is None")
     response_data = response_data[str(app_id)]["data"]
-    data = {}
+    data : dict= {}
     data["header_image"] = response_data.get("header_image", "")
     data["short_description"] = response_data.get("short_description", "")
     data["price_overview"] = response_data.get("price_overview", {})
     dlc_size = len(response_data.get("dlc", []))
     data["metacritic"] = response_data.get("metacritic", {})
     data["name"] = response_data.get("name", "")
-    print(data)
-    # data : dict= json.loads(response)
-    # print(data.keys())
+    data["website"] = response_data.get("website", "")
+    return data
+
+@retry(stop_max_attempt_number=3, wait_fixed=2000)
+def fetch_data(url, params = None):
+    if params is None:
+        response = requests.get(url=url,
+                            headers={'User-Agent': 'Mozilla/5.0'},
+                            timeout=5)
+    else:
+        response = requests.get(url=url, params=params,
+                            headers={'User-Agent': 'Mozilla/5.0'},
+                            timeout=5)
+    response.raise_for_status()
+    data :dict = response.json()
+    if 'success' in data.items() and data["success"] not in [1, True]:
+        raise ValueError(f'Endpoint {url} success flag not true')
+    return response.json()
