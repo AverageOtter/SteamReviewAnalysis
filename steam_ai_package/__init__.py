@@ -1,6 +1,6 @@
 """This module initializes the package and offers the client friendly function"""
 from steam_ai_package import logging_config
-from .api import get_app_id, get_n_reviews, get_app_details
+from .api import get_app_id, get_n_reviews, get_app_details, DBNoApiLog
 from .artificial_intelligence import sentiment
 import json
 
@@ -27,3 +27,7 @@ def get_sentiment_of_game(app_id):
 
 def get_app_id(game_name : str):
     return api.get_app_id(game_name)
+
+def DBLog(app_id):
+    DBNoApiLog(app_id)
+    

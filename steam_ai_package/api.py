@@ -144,3 +144,7 @@ def fetch_data(url, params = None):
     if 'success' in data.items() and data["success"] not in [1, True]:
         raise ValueError(f'Endpoint {url} success flag not true')
     return response.json()
+
+def DBNoApiLog(app_id):
+    logger.info("Grabbing Information from Database")
+    logger.info(f"Finished with {app_id}")

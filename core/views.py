@@ -24,6 +24,7 @@ def home(request):
                     game.save()
                 else:
                     processed_data = game.json_response
+                    steam_ai_package.DBNoApiLog(game.app_id)
             except SteamGames.DoesNotExist:
                 processed_data = steam_ai_package.get_sentiment_of_game(app_id)
                 new_game = SteamGames(app_id=app_id, json_response=processed_data)
