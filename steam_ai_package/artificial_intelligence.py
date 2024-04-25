@@ -5,6 +5,7 @@ from transformers import AutoModelForSequenceClassification
 from transformers import AutoTokenizer, AutoConfig
 import torch.nn.functional as F
 import torch
+import re
 from .logging_config import configure_logger
 from .wordcloud import generate_wordcloud
 
@@ -23,6 +24,12 @@ def preprocess(text):
     :doc-author: Trelent
     """
     return text
+
+def clean_string(input_string):
+    # Remove any characters that are not in the range of a-z and 0-9
+    cleaned_string = re.sub(r'[^a-zA-Z0-9]', '', input_string)
+    return cleaned_string
+
 
 def sentiment_anal(data: list[str]) -> list:
     """
@@ -115,10 +122,18 @@ def analytics(review_tuple, game_name):
             posText.append(text)
         elif star_int <= 2:
             NegText.append(text)
-            
     
-    ret["PosWordCloud"] = generate_wordcloud(posText)
-    ret["NegWordCloud"] = generate_wordcloud(NegText)
+    clean_game_name = clean_string(game_name)
+    filepath = "/home/otter/Desktop/Capstone/SteamReviewAnalysis/core/static/Wordclouds/"
+    filenamePos = clean_game_name + "Pos.png"
+    filenameNeg = clean_game_name + "Neg.png"
+    filePos = filepath + filenamePos
+    fileNeg = filepath + filenameNeg
+    generate_wordcloud(posText, filePos)
+    generate_wordcloud(NegText, fileNeg)
+
+    ret["PosWordCloud"] = "Wordclouds/" +filenamePos
+    ret["NegWordCloud"] = "Wordclouds/" +filenameNeg
     return ret
 
 
