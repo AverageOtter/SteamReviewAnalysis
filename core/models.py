@@ -1,4 +1,7 @@
 from django.db import models
 
 class SteamGames(models.Model):
-    name_of_game = models.CharField(max_length=50)
+    json_response = models.TextField()
+    app_id = models.IntegerField(primary_key=True)
+    created_at = models.DateTimeField(auto_now=False, auto_now_add=True)
+    TTL = models.DateTimeField(auto_now=False, auto_now_add=False)
