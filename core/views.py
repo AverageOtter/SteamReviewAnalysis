@@ -27,7 +27,7 @@ def home(request):
             del request.session['processed_data'] 
             context:dict = processed_data
             context["success"] = True
-            # with open("output.txt", "w") as file:
-            #     json.dump(processed_data, file, indent=4)
+            with open("output.txt", "w") as file:
+                json.dump(processed_data, file, indent=4)
     context['form'] = form
     return render(request, 'index.html', context=context)

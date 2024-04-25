@@ -129,9 +129,11 @@ def analytics(review_tuple, game_name):
     filenameNeg = clean_game_name + "Neg.png"
     filePos = filepath + filenamePos
     fileNeg = filepath + filenameNeg
-    
-    ret["PosWordCloud"] = generate_wordcloud(posText, filePos)
-    ret["NegWordCloud"] = generate_wordcloud(NegText, fileNeg)
+    generate_wordcloud(posText, filePos)
+    generate_wordcloud(NegText, fileNeg)
+
+    ret["PosWordCloud"] = "Wordclouds/" +filenamePos
+    ret["NegWordCloud"] = "Wordclouds/" +filenameNeg
     return ret
 
 

@@ -32,15 +32,3 @@ def generate_wordcloud(reviews: list, path : str):
 
     
     wordcloud.to_file(path)
-
-    # Convert word cloud image to Base64 encoded string
-    try:
-        buffer = BytesIO()
-        wordcloud.to_image().save(buffer, format="PNG")
-        b64_bytes = base64.b64encode(buffer.getvalue())
-        b64_string = b64_bytes.decode('utf-8')
-        result = b64_string
-    except Exception as e:
-        logger.error(f"Img to B64 Error: {e}")
-        result = "ERROR"
-    return result
