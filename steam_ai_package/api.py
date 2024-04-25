@@ -7,8 +7,17 @@ from bs4 import BeautifulSoup
 import json
 from retrying import retry
 from .logging_config import configure_logger
+import re
 
 logger = configure_logger(__name__)
+
+def clean_string(input_string):
+    # Replace spaces with underscores
+    input_string = input_string.replace(' ', '_')
+    # Remove any characters that are not in the range of a-z, A-Z, or 0-9
+    cleaned_string = re.sub(r'[^a-zA-Z0-9]', '', input_string)
+    return cleaned_string
+
 
 #! Needs NONE support, Currently Crashes if no game found & if timeout
 
@@ -93,6 +102,7 @@ def get_n_reviews(appid, n=100):
 
 def get_app_details(app_id):
     url="https://store.steampowered.com/api/appdetails?appids="
+    storepageurl = "https://store.steampowered.com/app/" + str(app_id) +"/"
     req = url + str(app_id)
     response_data = None
     try:
@@ -109,7 +119,14 @@ def get_app_details(app_id):
     dlc_size = len(response_data.get("dlc", []))
     data["metacritic"] = response_data.get("metacritic", {})
     data["name"] = response_data.get("name", "")
-    data["website"] = response_data.get("website", "")
+    cleaned_name = clean_string(data["name"])
+    if( (web:=response_data.get("website", "")) != None): 
+        data["website"] = web
+    else:
+        data["website"] = storepageurl + cleaned_name + "/"
+
+    
+    print(data["website"])
     return data
 
 @retry(stop_max_attempt_number=3, wait_fixed=2000)
