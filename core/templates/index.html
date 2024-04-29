@@ -51,14 +51,12 @@
 
   <style>
     .card {
-      background-color: #2c3e50;
       border: none;
       border-radius: 10px;
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   }
 
   .card-header {
-      background-color: #1f2c39;
       border-bottom: none;
       border-top-left-radius: 10px;
       border-top-right-radius: 10px;
@@ -102,7 +100,23 @@
   font-size: 16px;
   text-align: center;
   margin-top: 20px;
-  color: #3498db;
+}
+
+.image-with-glow {
+  box-shadow: 0 0 4px rgba(111,66,193,.9),0 0 4px rgba(111,66,193,.4),0 0 1rem rgba(111,66,193,.3),0 0 4rem rgba(111,66,193,.1);
+}
+
+.rounded-image {
+  border-radius: 10px; /* Adjust the value to change the roundness */
+}
+
+.canvasjs-chart-canvas {
+  border-radius: 12px;
+}
+
+#chartContainer1, #chartContainer2 {
+  border: 1px solid rgba(111,66,193,.9);
+  border-radius: 12px;
 }
 </style>
   <style>
@@ -151,7 +165,7 @@
     font-size: 15px;
     padding: 8px 12px;
     position: absolute;
-    bottom: 8px;
+    bottom: -32px;
     width: 100%;
     text-align: center;
     font-weight: bold;
@@ -219,20 +233,20 @@
       <button type="submit" class="btn btn-primary">Submit</button>
     </form>
   </div>
-  <div class="row justify-content-center" style="padding-top: 1vh;">
-    <div class="col-md-6">
-      {% if success %}
-        <div class="card">
+  {% if success %}
+    <div class="row justify-content-center" style="padding-top: 1vh;">
+      <div class="col-md-6">
+        <div class="card border-primary mb-3">
           <div class="card-header text-center">
-            <img src="{{ header_image }}" alt="Game Header Image" class="img-fluid" />
+            <img src="{{ header_image }}" alt="Game Header Image" class="img-fluid image-with-glow rounded-image" />
           </div>
           <div class="card-body">
-            <h5 class="game-title">{{ name }}</h5>
-            <p class="game-description">{{ short_description }}</p>
+            <h5 class="card-title">{{ name }}</h5>
+            <p class="card-text">{{ short_description }}</p>
             {% if website %}
-              <a href="{{ website }}" class="btn-play">Store Page</a>
+              <a href="{{ website }}" class="btn btn-primary">Store Page</a>
             {% else %}
-              <a href="https://store.steampowered.com/" class="btn-play">Steam Store</a>
+              <a href="https://store.steampowered.com/" class="btn btn-primary">Steam Store</a>
             {% endif %}
             <span class="game-price">{{ price_overview.final_formatted }}</span>
             {% if metacritic.score %}
@@ -240,32 +254,30 @@
             {% endif %}
           </div>
         </div>
-      {% endif %}
+      </div>
     </div>
-  </div>
-  <div class="row justify-content-center" style="padding-top: 1vh;">
-    <div class="col-md-6">
-      {% if success %}
+  {% endif %}
+  {% if success %}
+    <div class="row justify-content-center" style="padding-top: 1vh;">
+      <div class="col-md-6">
         <h2>Analysis of {{ name }}</h2>
         <p>Average Sentiment Rating {{ avg_stars }} from {{ num_reviews }} reviews.</p>
-      {% endif %}
-      {% comment %}For loop taht displays data about the game here{% endcomment %}
+        {% comment %}For loop taht displays data about the game here{% endcomment %}
+      </div>
     </div>
-  </div>
-  <div class="row justify-content-center" style="padding-top: 1vh;">
-    <div class="col-md-6">
-      {% if success %}
+  {% endif %}
+  {% if success %}
+    <div class="row justify-content-center" style="padding-top: 1vh;">
+      <div class="col-md-6">
         {% comment %}Slideshow{% endcomment %}
         <div class="slideshow-container">
-          <div class="mySlides ">
-            <div class="numbertext">1 / 2</div>
-            <img src="{% static PosWordCloud %}" class="img-fluid" alt="PosWordcloud" />
+          <div class="mySlides">
+            <img src="{% static PosWordCloud %}" class="img-fluid image-with-glow rounded-image" alt="PosWordcloud" />
             <div class="text">Positive Word Cloud</div>
           </div>
 
-          <div class="mySlides ">
-            <div class="numbertext">2 / 2</div>
-            <img src="{% static NegWordCloud %}" class="img-fluid" alt="NegWordcloud" />
+          <div class="mySlides">
+            <img src="{% static NegWordCloud %}" class="img-fluid image-with-glow rounded-image" alt="NegWordcloud" />
             <div class="text">Negative Word Cloud</div>
           </div>
 
@@ -278,19 +290,21 @@
           <span class="dot" onclick="currentSlide(1)"></span>
           <span class="dot" onclick="currentSlide(2)"></span>
         </div>
-      {% endif %}
+      </div>
     </div>
-  </div>
-  <div class="row justify-content-center" style="padding-top: 1vh;">
-    <div class="col-md-6">
-      <div id="chartContainer1" style="width: 100%; height: 360px;"></div>
+  {% endif %}
+  {% if success %}
+    <div class="row justify-content-center" style="padding-top: 1vh;">
+      <div class="col-md-6">
+        <div id="chartContainer1" style="width: 100%; height: 360px;" class="image-with-glow canvasjs-chart-canvas"></div>
+      </div>
     </div>
-  </div>
-  <div class="row justify-content-center" style="padding-top: 1vh;">
-    <div class="col-md-6">
-      <div id="chartContainer2" style="width: 100%; height: 360px;"></div>
+    <div class="row justify-content-center" style="padding-top: 1vh;">
+      <div class="col-md-6">
+        <div id="chartContainer2" style="width: 100%; height: 360px;" class="image-with-glow canvasjs-chart-canvas"></div>
+      </div>
     </div>
-  </div>
+  {% endif %}
 
   <script>
     let slideIndex = 1;
