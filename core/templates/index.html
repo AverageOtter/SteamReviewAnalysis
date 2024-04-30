@@ -259,9 +259,8 @@
   {% endif %}
   {% if success %}
     <div class="row justify-content-center" style="padding-top: 1vh;">
-      <div class="col-md-6">
-        <h2>Analysis of {{ name }}</h2>
-        <p>Average Sentiment Rating {{ avg_stars }} from {{ num_reviews }} reviews.</p>
+      <div class="col-md-6 text-center">
+        <h5>Average Sentiment Rating {{ avg_stars }} from {{ num_reviews }} reviews.</h5>
         {% comment %}For loop taht displays data about the game here{% endcomment %}
       </div>
     </div>
@@ -295,15 +294,16 @@
   {% endif %}
   {% if success %}
     <div class="row justify-content-center" style="padding-top: 1vh;">
-      <div class="col-md-6">
+      <div class="col-md-4">
         <div id="chartContainer1" style="width: 100%; height: 360px;" class="image-with-glow canvasjs-chart-canvas"></div>
       </div>
-    </div>
-    <div class="row justify-content-center" style="padding-top: 1vh;">
-      <div class="col-md-6">
+      <div class="col-md-4">
         <div id="chartContainer2" style="width: 100%; height: 360px;" class="image-with-glow canvasjs-chart-canvas"></div>
       </div>
     </div>
+    <br/>
+    <br/>
+
   {% endif %}
 
   <script>
